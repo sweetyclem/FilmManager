@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+<context:component-scan base-package="com.elephorm.formation.core.repository"/>
+<context:component-scan base-package="com.elephorm.formation.core.service"/>
+<context:component-scan base-package="com.elephorm.formation.core.controller"/>
+
+<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+</bean>
+
+<!--bean id="txManager" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="jndiName">
+        <value>java:comp/env/jdbc/videostore</value>
+    </property>
+</bean-->
+<tx:annotation-driven transaction-manager="txManager"/>
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource">
+        <ref bean="dataSource"/>
+    </property>
+    <property name="mappingResources">
+        <list>
+            <value>Film.hbm.xml</value>
+            <value>Acteur.hbm.xml</value>
+            <value>User.hbm.xml</value>
+        </list>
+    </property>
+    <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+            <prop key="current_session_context_class">thread</prop>
+            <prop key="cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+            <prop key="hibernate.show_sql">true</prop>
+            <prop key="hibernate.format_sql">true</prop>
+            <prop key="hibernate.hbm2ddl.auto">validate</prop>
+        </props>
+    </property>
+</bean>
+
+<!--bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    <property name="url" value="jdbc:mysql://localhost:3306/elephorm"/>
+    <property name="username" value="clem"/>
+    <property name="password" value="pass"/>
+</bean-->
+
+<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName">
+        <value>java:comp/env/jdbc/films</value>
+    </property>
+</bean>
+<!--
+    <bean id="filmDao" class="com.elephorm.formation.core.repository.JDBCFilmdao">
+        <constructor-arg value="com.mysql.jdbc.Driver"/>
+    </bean> 
+    <bean id="filmDao" class="com.elephorm.formation.core.repository.HibernateFilmDao">
+    </bean>
+    
+    <bean id="filmService" class="com.elephorm.formation.core.service.FilmService" autowire="byType">
+    </bean>
+    
+    <bean id="filmController" class="com.elephorm.formation.core.controller.DefaultFilmController">
+        <property name="service" ref="filmService"/>
+    </bean>
+-->
+</beans>

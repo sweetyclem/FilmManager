@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/webFilms">
+    <Resource name="jdbc/films" auth="Container" type="javax.sql.DataSource"
+    driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/elephorm"
+    username="clem" password="pass"
+    maxActive="3 " maxIdle="10" maxWait="-1"/>
+</Context>
